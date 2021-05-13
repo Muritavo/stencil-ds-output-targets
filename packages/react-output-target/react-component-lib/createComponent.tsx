@@ -8,6 +8,11 @@ import {
   mergeRefs,
 } from './utils';
 
+let tagNameTransformer: (tag: string) => string = (tag) => tag;
+export const setTransformTagName = (transformer: (tagName: string) => string) => {
+  tagNameTransformer = transformer;
+}
+
 export interface HTMLStencilElement extends HTMLElement {
   componentOnReady(): Promise<this>;
 }
@@ -76,7 +81,7 @@ export const createReactComponent = <
         style,
       };
 
-      return React.createElement(tagName, newProps, children);
+      return React.createElement(tagNameTransformer(tagName), newProps, children);
     }
 
     static get displayName() {
